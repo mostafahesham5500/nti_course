@@ -24,7 +24,7 @@
                     }
                     if($email[$i] === '@' ){
                         $numadd++;
-                        if($email[$i] === '@' && $email[$i+1] === '.' ){
+                        if($email[$i+1] === '.' ){
                             $numadd++;
                         }
                         if($numadd > 1){
@@ -34,7 +34,7 @@
                     }
                 }
                 for($i = 0; $i < strlen($email); $i++){
-                    if($email[$i] === '@' || $email[$i] === '.' ||
+                    if($email[$i] === '@' || $email[$i] === '.' || $email[$i] === '_' ||
                         ord($email[$i]) >= 48 && ord($email[$i]) <= 57 ||
                         ord($email[$i]) >= 65 && ord($email[$i]) <= 90 ||
                         ord($email[$i]) >= 97 && ord($email[$i]) <= 122 
@@ -50,11 +50,11 @@
                         for($k = $j ; $k < strlen($email);$k++){
                             if($email[$k] === '.' ){
                                 $numdot++;
-                                if($numdot > 2 || $numdot == 0){
-                                    $type = "no";
-                                    break;
-                                }
                             }
+                        }
+                        if($numdot > 2 || $numdot == 0){
+                            $type = "no";
+                            break;
                         }
                     }
                 }
@@ -77,7 +77,7 @@
                 $errors["email"] = "required";
             }else{
                 if(validate($email)=="no"){
-                    $errors["email"] = "is validate";
+                    $errors["email"] = "is invalidate";
                 }
             }
             
@@ -97,7 +97,7 @@
                 $errors["linkedin"] = "required";
             }else{
                 if(validate($linkedin)=="no"){
-                    $errors["linkedin url"] = "is validate";
+                    $errors["linkedin url"] = "is invalidate";
                 }
             }
             if(empty($errors)){
