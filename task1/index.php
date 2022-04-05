@@ -1,6 +1,4 @@
 <?php
-
-
 function getCharacters($string)
 {
     $len = strlen($string);
