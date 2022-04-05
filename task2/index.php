@@ -9,6 +9,57 @@
 </head>
 <body class="container">
     <?php 
+    function validate($email)
+    {
+        $numadd = 0;
+                $type = "yes";
+                for($i = 0; $i < strlen($email) - 1; $i++){
+                    if($email[strlen($email) - 1] === '.' || $email[strlen($email) - 1] === '@'){
+                        $type = "no";
+                        break;
+                    }
+                    if($email[$i] === '.' && $email[$i+1] === '.' || $email[0] === '.' || $email[0] === '@'){
+                        $type = "no";
+                        break;
+                    }
+                    if($email[$i] === '@' ){
+                        $numadd++;
+                        if($email[$i] === '@' && $email[$i+1] === '.' ){
+                            $numadd++;
+                        }
+                        if($numadd > 1){
+                            $type = "no";
+                            break;
+                        }
+                    }
+                }
+                for($i = 0; $i < strlen($email); $i++){
+                    if($email[$i] === '@' || $email[$i] === '.' ||
+                        ord($email[$i]) >= 48 && ord($email[$i]) <= 57 ||
+                        ord($email[$i]) >= 65 && ord($email[$i]) <= 90 ||
+                        ord($email[$i]) >= 97 && ord($email[$i]) <= 122 
+                    ){
+                    }else{
+                        $type = "no";
+                        break;
+                    }
+                }
+                for($j = 0; $j < strlen($email); $j++){
+                    if($email[$j] === '@' ){
+                        $numdot = 0;
+                        for($k = $j ; $k < strlen($email);$k++){
+                            if($email[$k] === '.' ){
+                                $numdot++;
+                                if($numdot > 2 || $numdot == 0){
+                                    $type = "no";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                return $type;
+    }
         if($_SERVER["REQUEST_METHOD"] == "POST"){
             $name = $_POST["name"];
             $email = $_POST["email"];
@@ -24,8 +75,10 @@
 
             if(empty($email)){
                 $errors["email"] = "required";
-            }elseif(!preg_match("/^([a-zA-Z0-9\.]+@+[a-zA-Z]+(\.)+[a-zA-Z]{2,3})$/",$email)){
-                $errors["email"] = "Invalid URL";
+            }else{
+                if(validate($email)=="no"){
+                    $errors["email"] = "is validate";
+                }
             }
             
             if(empty($password)){
@@ -42,11 +95,11 @@
 
             if(empty($linkedin)){
                 $errors["linkedin"] = "required";
-            }elseif(!preg_match("/^([a-zA-Z0-9\.]+@+[a-zA-Z]+(\.)+[a-zA-Z]{2,3})$/",$linkedin)) {
-                $errors["linkedin"] = "Invalid URL";
+            }else{
+                if(validate($linkedin)=="no"){
+                    $errors["linkedin url"] = "is validate";
+                }
             }
-
-
             if(empty($errors)){
                 echo '<div class="alert alert-success">Valid Data</div>';
             }else{
