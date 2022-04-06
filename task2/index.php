@@ -11,7 +11,6 @@
     <?php 
     function validate($email)
     {
-        $numadd = 0;
                 $type = "yes";
                 if(str_contains($email,"@.") ||
                     substr_count($email,"@") != 1 ||
