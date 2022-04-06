@@ -24,7 +24,7 @@
                     }
                     if($email[$i] === '@' ){
                         $numadd++;
-                        if($email[$i+1] === '.' ){
+                        if($email[$i] === '@' && $email[$i+1] === '.' ){
                             $numadd++;
                         }
                         if($numadd > 1){
@@ -96,8 +96,8 @@
             if(empty($linkedin)){
                 $errors["linkedin"] = "required";
             }else{
-                if(validate($linkedin)=="no"){
-                    $errors["linkedin url"] = "is invalidate";
+                if(!str_contains($linkedin,"https://www.linkedin.com/") || strpos($linkedin,"https://www.linkedin.com/") != 0){
+                    $errors["linkedin url"] = "is invalid";
                 }
             }
             if(empty($errors)){
