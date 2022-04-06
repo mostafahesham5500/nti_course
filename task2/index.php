@@ -13,25 +13,17 @@
     {
         $numadd = 0;
                 $type = "yes";
-                for($i = 0; $i < strlen($email) - 1; $i++){
-                    if($email[strlen($email) - 1] === '.' || $email[strlen($email) - 1] === '@'){
-                        $type = "no";
-                        break;
-                    }
-                    if($email[$i] === '.' && $email[$i+1] === '.' || $email[0] === '.' || $email[0] === '@'){
-                        $type = "no";
-                        break;
-                    }
-                    if($email[$i] === '@' ){
-                        $numadd++;
-                        if($email[$i] === '@' && $email[$i+1] === '.' ){
-                            $numadd++;
-                        }
-                        if($numadd > 1){
-                            $type = "no";
-                            break;
-                        }
-                    }
+                if(str_contains($email,"@.") ||
+                    substr_count($email,"@") != 1 ||
+                    str_contains($email,"..")  ||
+                    $email[0] === '.' ||
+                    $email[0] === '@'||
+                    $email[strlen($email) - 1] === '.' || 
+                    $email[strlen($email) - 1] === '@' ||
+                    substr_count($email,".",strrpos($email,"@")) > 2 ||
+                    substr_count($email,".",strrpos($email,"@")) < 1  )
+                {
+                    $type = "no";
                 }
                 for($i = 0; $i < strlen($email); $i++){
                     if($email[$i] === '@' || $email[$i] === '.' || $email[$i] === '_' ||
@@ -42,20 +34,6 @@
                     }else{
                         $type = "no";
                         break;
-                    }
-                }
-                for($j = 0; $j < strlen($email); $j++){
-                    if($email[$j] === '@' ){
-                        $numdot = 0;
-                        for($k = $j ; $k < strlen($email);$k++){
-                            if($email[$k] === '.' ){
-                                $numdot++;
-                            }
-                        }
-                        if($numdot > 2 || $numdot == 0){
-                            $type = "no";
-                            break;
-                        }
                     }
                 }
                 return $type;
