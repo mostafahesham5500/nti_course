@@ -2,7 +2,8 @@
     include "../function/connect.php";
     $num = $_GET['id'];
     $select = "SELECT title,content,`image` FROM users WHERE  id = $num";
-    $item = mysqli_query($connect,$select);
+    $data = mysqli_query($connect,$select);
+    $item = mysqli_fetch_assoc($data);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,9 +36,8 @@
                 $errors["content"] = "must be > 100";
             }
 
-            if(empty($fileimg)){
-                $errors["file"] = "required";
-            }else{
+            if(!empty($fileimg)){
+                unlink("../".$item['image']);
                 $arr = explode(".",$fileimg);
                 $extension = strtolower(end($arr));
                 $allowedextnsion = ["jpg","png","svg","gif","jpeg","ico"];
@@ -47,6 +47,12 @@
                 }else{
                     $uploadfile = "../uploads/".time().rand().'.'.$extension;
                 }
+                if(move_uploaded_file($tmpname,"../".$uploadfile)){
+                    $update = "UPDATE users SET `image` = '$uploadfile' WHERE id = $num";
+                    mysqli_query($connect,$update);
+                }else{
+                    echo "nooooo";
+                }
             }
 
             if(empty($errors)){
@@ -54,7 +60,7 @@
                     echo mysqli_connect_error();
                 }else{
                     $update = "UPDATE users SET title = '$title' , 
-                    content = '$content' , `image` = '$uploadfile' WHERE id = $num";
+                    content = '$content' WHERE id = $num";
                     if(mysqli_query($connect,$update)){
                         echo '<div class="alert alert-success">Data Is Update</div>';
                         header("location:../showallusers.php");
@@ -71,20 +77,19 @@
         }
     ?>
     <form action="<?php echo $_SERVER['PHP_SELF'] . "?id=".$num; ?>" method="post" enctype="multipart/form-data">
-    <?php while($row = mysqli_fetch_assoc($item)){?>
             <div class="form-group">
-                <input value="<?php echo $row["title"]; ?>"  type="text" class="form-control" name="title" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Title">
+                <input value="<?php echo $item["title"]; ?>"  type="text" class="form-control" name="title" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Title">
             </div>
             <div class="form-group">
                 <textarea name="content" id="" cols="80" rows="10">
-                    <?php echo $row["content"]; ?>
+                    <?php echo $item["content"]; ?>
                 </textarea>
             </div>
             <div class="form-group">
                 <input type="file" name="file">
+                <img src="<?php echo "../".$item['image']; ?>"/>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
-            <?php }?>
         </form>
 </body>
 </html>
